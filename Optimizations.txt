@@ -1,0 +1,16 @@
+Changes made to optimize performance:
+
+
+Deault partitions are 200
+
+questionsDF.rdd.getNumPartitions()=4
+
+answers_month.rdd.getNumPartitions()=200
+
+To avoid more shuffles in the join step,  reduced the no. of partitions using coalesce and set the same no. of partitions for both dataframes in the join condition 
+
+answers_month=answers_month.coalesce(4)
+
+resultDF = questionsDF.join(answers_month, 'question_id').select('question_id', 'title', 'month', 'cnt')
+
+Removal of column 'creation_date' in the select step and noticed an improvement in performance
